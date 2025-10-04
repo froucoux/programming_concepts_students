@@ -1,6 +1,7 @@
 package basics;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ASCIIDecoder {
 
@@ -11,7 +12,7 @@ public class ASCIIDecoder {
      * to your decode method, you should return : [ "Hello", "World" ].
      * 
      * Forbidden characters are passed as an array of int.
-     * Each element of this array correspond to the decimal ASCII code
+     * Each element of this array corresponds to the decimal ASCII code
      * of a forbidden character OR null if there's no forbidden character
      * If you encounter one of these forbidden character
      * you must ignore it when you translate your sentence.
@@ -39,17 +40,9 @@ public class ASCIIDecoder {
     }
 
     private static int[] filterForbiddenCodePoints(int[] codePoints, int[] forbidden) {
-        ArrayList<Integer> filteredList = new ArrayList<>();
-        for (int cp : codePoints) {
-            if (!isForbidden(cp, forbidden)) {
-                filteredList.add(cp);
-            }
-        }
-        int[] filteredArray = new int[filteredList.size()];
-        for (int i = 0; i < filteredList.size(); i++) {
-            filteredArray[i] = filteredList.get(i);
-        }
-        return filteredArray;
+        return Arrays.stream(codePoints)
+                .filter(cp -> !isForbidden(cp, forbidden))
+                .toArray();
     }
 
     private static String decodeSentence(int[] codePoints) {
