@@ -61,14 +61,7 @@ public class ASCIIDecoder {
         for (int i = 0; i < sentences.length; i++) {
             String[] currentCodedSentence = sentences[i];
             int[] codePoints = convertToCodePoint(currentCodedSentence);
-
-            int[] filteredCodePoints;
-            if (forbiddenSet == null) {
-                filteredCodePoints = codePoints;
-            } else {
-                filteredCodePoints = filterForbiddenCodePoints(codePoints, forbiddenSet);
-            }
-
+            int[] filteredCodePoints = filterForbiddenCodePoints(codePoints, forbiddenSet);
             String decodedSentence = decodeSentence(filteredCodePoints);
             decodedSentences[i] = decodedSentence;
         }
