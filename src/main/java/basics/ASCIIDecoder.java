@@ -1,7 +1,8 @@
 package basics;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ASCIIDecoder {
 
@@ -21,15 +22,6 @@ public class ASCIIDecoder {
      *
      * You should NEVER return null or an array containing null.
      */
-    private static boolean isForbidden(int codePoint, int[] forbidden) {
-        for (int fcp : forbidden) {
-            if (codePoint == fcp) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private static int[] convertToCodePoint(String[] sentence) {
         int numChars = sentence.length;
         int[] codePoints = new int[numChars];
@@ -39,9 +31,9 @@ public class ASCIIDecoder {
         return codePoints;
     }
 
-    private static int[] filterForbiddenCodePoints(int[] codePoints, int[] forbidden) {
+    private static int[] filterForbiddenCodePoints(int[] codePoints, Set<Integer> forbidden) {
         return Arrays.stream(codePoints)
-                .filter(cp -> !isForbidden(cp, forbidden))
+                .filter(cp -> !forbidden.contains(cp))
                 .toArray();
     }
 
@@ -53,17 +45,28 @@ public class ASCIIDecoder {
         return sb.toString();
     }
 
+    private static Set<Integer> buildForbiddenSet(int[] forbidden) {
+        Set<Integer> forbiddenSet = new HashSet<>();
+        if (forbidden != null) {
+            for (int cp : forbidden) {
+                forbiddenSet.add(cp);
+            }
+        }
+        return forbiddenSet;
+    }
+
     public static String[] decode(int[] forbidden, String[][] sentences) {
         String[] decodedSentences = new String[sentences.length];
+        Set<Integer> forbiddenSet = buildForbiddenSet(forbidden);
         for (int i = 0; i < sentences.length; i++) {
             String[] currentCodedSentence = sentences[i];
             int[] codePoints = convertToCodePoint(currentCodedSentence);
 
             int[] filteredCodePoints;
-            if (forbidden == null) {
+            if (forbiddenSet == null) {
                 filteredCodePoints = codePoints;
             } else {
-                filteredCodePoints = filterForbiddenCodePoints(codePoints, forbidden);
+                filteredCodePoints = filterForbiddenCodePoints(codePoints, forbiddenSet);
             }
 
             String decodedSentence = decodeSentence(filteredCodePoints);
