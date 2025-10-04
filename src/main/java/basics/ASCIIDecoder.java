@@ -1,4 +1,5 @@
 package basics;
+
 import java.util.ArrayList;
 
 public class ASCIIDecoder {
@@ -19,8 +20,62 @@ public class ASCIIDecoder {
      *
      * You should NEVER return null or an array containing null.
      */
-    public static String [] decode(int[] forbidden, String[][] sentences){
-         return null;
+    private static boolean isForbidden(int codePoint, int[] forbidden) {
+        for (int fcp : forbidden) {
+            if (codePoint == fcp) {
+                return true;
+            }
+        }
+        return false;
     }
 
+    private static int[] convertToCodePoint(String[] sentence) {
+        int numChars = sentence.length;
+        int[] codePoints = new int[numChars];
+        for (int i = 0; i < numChars; i++) {
+            codePoints[i] = Integer.parseInt(sentence[i]);
+        }
+        return codePoints;
+    }
+
+    private static int[] filterForbiddenCodePoints(int[] codePoints, int[] forbidden) {
+        ArrayList<Integer> filteredList = new ArrayList<>();
+        for (int cp : codePoints) {
+            if (!isForbidden(cp, forbidden)) {
+                filteredList.add(cp);
+            }
+        }
+        int[] filteredArray = new int[filteredList.size()];
+        for (int i = 0; i < filteredList.size(); i++) {
+            filteredArray[i] = filteredList.get(i);
+        }
+        return filteredArray;
+    }
+
+    private static String decodeSentence(int[] codePoints) {
+        StringBuilder sb = new StringBuilder();
+        for (int cp : codePoints) {
+            sb.appendCodePoint(cp);
+        }
+        return sb.toString();
+    }
+
+    public static String[] decode(int[] forbidden, String[][] sentences) {
+        String[] decodedSentences = new String[sentences.length];
+        for (int i = 0; i < sentences.length; i++) {
+            String[] currentCodedSentence = sentences[i];
+            int[] codePoints = convertToCodePoint(currentCodedSentence);
+
+            int[] filteredCodePoints;
+            if (forbidden == null) {
+                filteredCodePoints = codePoints;
+            } else {
+                filteredCodePoints = filterForbiddenCodePoints(codePoints, forbidden);
+            }
+
+            String decodedSentence = decodeSentence(filteredCodePoints);
+            decodedSentences[i] = decodedSentence;
+        }
+        return decodedSentences;
+    }
 }
